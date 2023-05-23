@@ -1,0 +1,52 @@
+{
+    "metrics" : [
+        {
+            "physical quantity": "pressure",
+            "unit": "bar",
+            "sensor": "PS",
+            "sampling rate": "100 Hz"
+        },
+        {
+            "physical quantity": "motor power",
+            "unit": "W",
+            "sensor": "EPS",
+            "sampling rate": "100 Hz"
+        },
+        {
+            "physical quantity": "volume flow",
+            "unit": "l/min",
+            "sensor": "FS",
+            "sampling rate": "10 Hz"
+        },
+        {
+            "physical quantity": "temperature",
+            "unit": "°C",
+            "sensor": "TS",
+            "sampling rate": "1 Hz"
+        },
+        {
+            "physical quantity": "vibration",
+            "unit": "mm/s",
+            "sensor": "VS",
+            "sampling rate": "1 Hz"
+        },
+        {
+            "physical quantity": "cooling efficiency",
+            "unit": "%",
+            "sensor": "CE",
+            "sampling rate": "1 Hz"
+        },
+        {
+            "physical quantity": "cooling power",
+            "unit": "kW",
+            "sensor": "CP",
+            "sampling rate": "1 Hz"
+        },
+        {
+            "physical quantity": "efficiency factor",
+            "unit": "%",
+            "sensor": "SE",
+            "sampling rate": "1 Hz"
+        }
+    ]
+}
