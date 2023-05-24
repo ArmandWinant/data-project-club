@@ -40,19 +40,23 @@ dl_samples_create = """
 """
 
 dl_sensors_insert = """
-    INSERT INTO sensors (type, number, sampling_rate) VALUES (%s, %s, %s);
+    INSERT INTO sensors (type, number, sampling_rate) VALUES (%s, %s, %s)
+    ON CONFLICT (type, number) DO NOTHING;
 """
 
 dl_metrics_insert = """
-    INSERT INTO metrics (name, unit) VALUES (%s, %s);
+    INSERT INTO metrics (name, unit) VALUES (%s, %s)
+    ON CONFLICT (name, unit) DO NOTHING;
 """
 
 dl_cycles_insert = """
-    INSERT INTO CYCLES (cycle_number, start_date, start_time) VALUES (%s, %s, %s);
+    INSERT INTO CYCLES (cycle_number, start_date, start_time) VALUES (%s, %s, %s)
+    ON CONFLICT (cycle_number, start_date, start_time) DO NOTHING;
 """
 
 dl_samples_insert = """
-    INSERT INTO samples (sensor_id, cycle_id, sample_number, metric_id, value) VALUES (%s, %s, %s, %s);
+    INSERT INTO samples (sensor_id, cycle_id, sample_number, metric_id, value) VALUES (%s, %s, %s, %s)
+    ON CONFLICT (sensor_id, cycle_id, sample_number, metric_id) DO NOTHING;
 """
 
 dl_drop_table_queries = [dl_sensors_drop, dl_metrics_drop, dl_cycles_drop, dl_samples_drop]
