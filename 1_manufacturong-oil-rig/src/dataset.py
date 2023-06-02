@@ -45,15 +45,20 @@ class DataSet:
             print("The data has not been loaded.")
         except KeyError:
             print("Cound not find cycle number.")
+
             
-    def metrics_upload():
-        pass
+class SensorDataSet(DataSet):
+    def __init__(self, filename):
+        super().__init__(filename)
+        self.sensor_type, self.sensor_number = self.get_sensor_name()
+#     def metrics_upload():
+#         pass
     
-    def sensors_upload():
-        pass
+#     def sensors_upload():
+#         pass
     
-    def samples_upload():
-        pass
+#     def samples_upload():
+#         pass
     
-    def cycles_upload():
-        pass
+#     def cycles_upload():
+#         pass
