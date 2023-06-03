@@ -3,19 +3,24 @@ import numpy as np
 import os
 from pathlib import Path
 import re
+from datetime import datetime
+
 
 class DataSet:
     def __init__(self, file_name):
         self.__file_name = file_name
         self.__project_dir = os.path.join(Path.home(), "Desktop/Projects/data-project-club/1_manufacturong-oil-rig")
         self.__data_dir = os.path.join(self.__project_dir, "data")
-        
-        self.__data = None
-        
+                
     def read_data(self):
         try:
-            self.__data = pd.read_csv(os.path.join(self.__data_dir, self.__file_name), delimiter="\t", header=None)
-
+            file_full_path = os.path.join(self.__data_dir, self.__file_name)
+            self.__data = pd.read_csv(file_full_path, delimiter="\t", header=None)
+            
+            file_mod_time = datetime.fromtimestamp(os.path.getmtime(file_full_path))
+            file_mod_date_str = file_mod_time.strftime("%Y-%m-%d")
+            self.__cycleDate = file_mod_date_str
+            
             self.__cycleCount = self.__data.shape[0]
             self.__sampleCount = self.__data.shape[1]
         except FileNotFoundError:
@@ -24,6 +29,7 @@ class DataSet:
     def cycle_metadata(self):
         try:
             self.__data["cycleNumber"] = self.__data.index + 1
+            self.__data["cycleDate"] = self.__cycleDate
         except AttributeError:
             print("The data has not been loaded.")
             
@@ -43,15 +49,19 @@ class DataSet:
         
     def cycle_to_sample(self):
         try:
-            long_data = self.__data.melt(id_vars=["cycleNumber", "sensorType", "sensorNumber"], var_name="sampleNumber", value_name="value")
-            long_data["sampleNumber"] += 1
-            long_data.sort_values(by=["cycleNumber", "sampleNumber"], inplace=True)
+            self.__data_long = self.__data.melt(id_vars=["cycleDate", "cycleNumber", "sensorType", "sensorNumber"],
+                                         var_name="sampleNumber", value_name="value")
+            
+            self.__data_long["sampleNumber"] += 1
+            self.__data_long["samplingRate"] = self.__sampleCount
         except AttributeError:
             print("The data has not been loaded.")
         except KeyError:
             print("Cound not find cycle number.")
     
-    def get_data(self):
+    def get_data(self, long=False):
+        if long:
+            return self.__data_long
         return self.__data
 
             
@@ -67,14 +77,4 @@ class SensorDataSet(DataSet):
         self.sensor_metadata()
         self.cycle_to_sample()
         
-#     def metrics_upload():
-#         pass
-    
-#     def sensors_upload():
-#         pass
-    
-#     def samples_upload():
-#         pass
-    
-#     def cycles_upload():
-#         pass
+        print(self.get_data(long=True).head())
