@@ -27,8 +27,7 @@ class SpotifyAPIClient:
         r = requests.post(url, data=data, headers=headers)
         
         if r.status_code == 200:
-            r_json = r.json()
-            return r_json
+            self.access_token = r.json()
         
     def get_artist_info(self, artist_id):
         url = "https://api.spotify.com/v1/artists/6rqlONGmPuP2wJVSfliLBI"
