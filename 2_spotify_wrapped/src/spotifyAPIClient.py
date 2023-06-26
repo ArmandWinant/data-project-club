@@ -27,17 +27,22 @@ class SpotifyAPIClient:
         r = requests.post(url, data=data, headers=headers)
         
         if r.status_code == 200:
-            self.access_token = r.json()
+            access_token = r.json()
+            r.close()
+            self.headers = {"Authorization": f"{access_token['token_type']} {access_token['access_token']}"}
     
     def api_request(self, url, *args, **kwargs):
-        # TODO: verify that the access token is defined
         try:
-            headers = {"Authorization": f"{self.access_token['token_type']} {self.access_token['access_token']}"}
-            artist_data = request.get(url, headers=headers)
+            r = requests.get(url, headers=self.headers)
+            if r.status_code == 200:
+                data = r.json()
+                r.close()
+                return data
         except AttributeError:
             print("SpotifyAPIClient.api_request(): Access Token was not generated (call SpotifyAPIClient.get_access_token())")
             return
-        return artist_data
+        # TODO: throw except when the access token has expired
+        return
     
 #     def get_artist_info(self, artist_id):
 #         url = "https://api.spotify.com/v1/artists/6rqlONGmPuP2wJVSfliLBI"
