@@ -2,11 +2,20 @@ import json
 import requests
 import os
 from pathlib import Path
+import logging
 
 class SpotifyAPIClient:
     def __init__(self, credentials_file):
-        credentials_dir = os.path.join(Path.home(), f"Desktop/Projects/data-project-club/2_spotify_wrapped", credentials_file)
+        self.project_dir = os.path.join(Path.home(), f"Desktop/Projects/data-project-club/2_spotify_wrapped")
+        
+        credentials_dir = os.path.join(self.project_dir, credentials_file)
         self.get_credentials(credentials_dir)
+        
+        try:
+            tmp_data_dir = os.path.join(self.project_dir, "tmp")
+            os.mkdir(tmp_data_dir)
+        except FileExistsError as e:
+            pass
         
     def get_credentials(self, file_dir):
         try:
@@ -27,13 +36,13 @@ class SpotifyAPIClient:
         r = requests.post(url, data=data, headers=headers)
         
         if r.status_code == 200:
-            access_token = r.json()
+            token_info = r.json()
+            self.headers = {"Authorization": f"{token_info['token_type']} {token_info['access_token']}"}
             r.close()
-            self.headers = {"Authorization": f"{access_token['token_type']} {access_token['access_token']}"}
     
-    def api_request(self, url, *args, **kwargs):
+    def api_request(self, url, headers=None):
         try:
-            r = requests.get(url, headers=self.headers)
+            r = requests.get(url, headers=headers)
             if r.status_code == 200:
                 data = r.json()
                 r.close()
@@ -41,10 +50,28 @@ class SpotifyAPIClient:
         except AttributeError:
             print("SpotifyAPIClient.api_request(): Access Token was not generated (call SpotifyAPIClient.get_access_token())")
             return
-        # TODO: throw except when the access token has expired
+        r.close()
         return
     
-#     def get_artist_info(self, artist_id):
-#         url = "https://api.spotify.com/v1/artists/6rqlONGmPuP2wJVSfliLBI"
-#         headers = {"Authorization": f"{sc.access_token['token_type']} {sc.access_token['access_token']}"}
-#         artist_data = requests.get(url, headers=headers)
+    def store_data(self, data, filename):
+        file_dir = os.path.join(self.project_dir, f"tmp/{filename}.json")
+        
+        json_data = json.dumps(data, indent=4)
+        
+        with open(file_dir, "w") as outfile:
+            outfile.write(json_data)
+        
+        
+    def get_user_info(self):
+        url = f"https://api.spotify.com/v1/users/31jetuno3fq5jswe3glemlzm3hwu"
+        data = self.api_request(url, self.headers)
+        
+        self.store_data(data, "user_info")
+    
+    def get_artist_info(self, artist_id="6rqlONGmPuP2wJVSfliLBI"):
+        url = f"https://api.spotify.com/v1/artists/{artist_id}"
+        data = self.api_request(url, self.headers)
+        
+        self.store_data(data, "artist_info")
+    
+    

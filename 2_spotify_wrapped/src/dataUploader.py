@@ -37,7 +37,6 @@ class DataUploader:
         except ClientError as e:
             logging.error(e)
             return False
-        print("Created the bucket")
         return True
     
     def deleteBucket(self, bucket_name="dpc-spotify-wrap-data"):
@@ -46,4 +45,3 @@ class DataUploader:
         except ClientError as e:
             logging.error(e)
             return False
-        print("Deleted the bucket")
