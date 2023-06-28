@@ -160,7 +160,4 @@ cython_debug/
 #.idea/
 
 */data/
-2_spotify_wrapped/credential.json
-2_spotify_wrapped/credentials.json
-2_spotify_wrapped/AWSCredentials.json
-2_spotify_wrapped/SpotifyCredentials.json
+*/secrets
